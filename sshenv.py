@@ -39,9 +39,10 @@ def get_envs(ssh_home):
     env_dirs = get_valid_env_dirs(ssh_home)
 
     return [{
+        'id': i+1,
         'path': p,
         'name': p.name,
-    } for p in env_dirs]
+    } for i, p in enumerate(env_dirs)]
 
 
 def get_config_path(ssh_home):
@@ -136,9 +137,9 @@ def list_cmd(args):
     print("Available environments:")
     for i, env in enumerate(envs):
         if env == active_env:
-            print(f' *[{i}] {env["name"]}')
+            print(f' *[{env["id"]}] {env["name"]}')
         else:
-            print(f'  [{i}] {env["name"]}')
+            print(f'  [{env["id"]}] {env["name"]}')
 
 
 def deactivate_cmd(args):
@@ -160,7 +161,12 @@ def switch_cmd(args):
     active_env = get_active_env(ssh_home, envs)
 
     env_to_switch_to_name = args.name
-    env_to_switch_to = list(filter(lambda x: x['name'] == env_to_switch_to_name, envs))
+
+    try:
+        env_to_switch_to_id = int(env_to_switch_to_name)
+        env_to_switch_to = list(filter(lambda x: x['id'] == env_to_switch_to_id, envs))
+    except ValueError:
+        env_to_switch_to = list(filter(lambda x: x['name'] == env_to_switch_to_name, envs))
 
     if len(env_to_switch_to) > 1:
         print(f'There are multiple environments with the same name {env_to_switch_to_name}. '
