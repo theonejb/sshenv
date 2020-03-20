@@ -5,14 +5,29 @@ sshenv
 to manage multiple SSH environments. See **What are SSH Environments**
 section below for the rationale behind creating this.
 
+_This is V0.5. While I have tested it as well as I can and it's
+a pretty simple Python program, please do make a backup of you
+`.ssh` directory before using this. I'm can't guarantee that your
+machine won't catch on fire if you use this._
+
 ## Installation
-The only dependency is a recent version of Python. `sshenv` was
-developed on Python 3.7.0 but should work with any recent version.
+Installation can be done by downloading the `sshenv.py` file and
+saving it somewhere on your system.
 
 Personally I sym-link the `sshenv.py` file into a directory on my
 `$PATH` (`~/.local/bin/`) as `sshenv` and make it executable by
 `chmod u+x sshenv`. I can then use the `sshenv` command from my shell
 in any directory to switch environments.
+
+### Requirements
+The only dependency is a recent version of Python. `sshenv` was
+developed on Python 3.7.0 but should work with any recent version.
+
+I have only tested this on an Ubuntu machine but I'm 99.99% sure it
+works on a Mac without any issues as well.
+
+I can give no indication of how well, if at all, this works on
+Windows.
 
 ## Usage
 ```
