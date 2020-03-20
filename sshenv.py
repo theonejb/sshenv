@@ -20,7 +20,9 @@ def get_ssh_home():
 
 
 def is_valid_env_dir(dir_path):
-    return not dir_path.name.startswith('.')
+    sshenv_config_file = dir_path / '.sshenv'
+
+    return sshenv_config_file.exists() and sshenv_config_file.is_file()
 
 
 def get_valid_env_dirs(ssh_home):
@@ -43,7 +45,7 @@ def get_envs(ssh_home):
 
 
 def get_config_path(ssh_home):
-    return ssh_home / 'config'
+    return ssh_home / '.sshenv'
 
 
 def can_modify_current_config(ssh_home):
@@ -118,8 +120,11 @@ def activate_env(ssh_home, env_to_activate):
         file_name = file_path.name
         symlink_path = ssh_home / file_name
 
+        if symlink_path.exists():
+            raise IOError(f'{symlink_path} already exists')
+
         symlink_path.symlink_to(file_path)
-        print(f'Symlinked {file_path} to {symlink_path}')
+        print(f'Symlinked {file_path} to {symlink_path}.')
 
 
 def list_cmd(args):
@@ -175,23 +180,30 @@ def switch_cmd(args):
         print(f'Deactivating {active_env["name"]}.')
         deactivate_env(ssh_home, active_env)
 
-    activate_env(ssh_home, env_to_switch_to)
-    print(f'{env_to_switch_to["name"]} was activated.')
+    try:
+        activate_env(ssh_home, env_to_switch_to)
+        print(f'{env_to_switch_to["name"]} was activated.')
+    except IOError as e:
+        print(f'Unable to activate {env_to_switch_to["name"]}. Error: {e}. Rolling back any activation.')
+        deactivate_env(ssh_home, env_to_switch_to)
+        sys.exit(1)
 
 
 def configure_argparser():
     parser = argparse.ArgumentParser()
     parser.set_defaults(func=lambda x: parser.print_help())
 
-    sub_parsers = parser.add_subparsers()
+    sub_parsers = parser.add_subparsers(title='Commands')
 
-    list_cmd_parser = sub_parsers.add_parser('list', help='Output a list of environments and exit.')
+    list_cmd_parser = sub_parsers.add_parser('list', aliases=['l'],
+                                             help='Output a list of environments and exit.')
     list_cmd_parser.set_defaults(func=list_cmd)
 
-    deactivate_cmd_parser = sub_parsers.add_parser('deactivate', help='Deactivate the currently active env.')
+    deactivate_cmd_parser = sub_parsers.add_parser('deactivate', aliases=['d'],
+                                                   help='Deactivate the currently active env.')
     deactivate_cmd_parser.set_defaults(func=deactivate_cmd)
 
-    switch_cmd_parser = sub_parsers.add_parser('switch',
+    switch_cmd_parser = sub_parsers.add_parser('switch', aliases=['s', 'activate', 'a'],
                                                help='Activates the named environment. If an environment is currently '
                                                     'active it is first deactivated.')
     switch_cmd_parser.add_argument('name')
