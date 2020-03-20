@@ -31,7 +31,7 @@ Windows.
 
 ## Usage
 ```
-sshenv -h  
+sshenv -h
 usage: sshenv [-h] {list,l,deactivate,d,switch,s,activate,a} ...
 
 optional arguments:
@@ -42,8 +42,9 @@ Commands:
     list (l)            Output a list of environments and exit.
     deactivate (d)      Deactivate the currently active env.
     switch (s, activate, a)
-                        Activates the named environment. If an environment is
-                        currently active it is first deactivated.
+                        Activates the environment which matches the name or
+                        number given. If an environment is currently active it
+                        is first deactivated.
 ```
 
 By default it uses `~/.ssh` as the `SSH_HOME` but you can customize

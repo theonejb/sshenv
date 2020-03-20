@@ -210,8 +210,8 @@ def configure_argparser():
     deactivate_cmd_parser.set_defaults(func=deactivate_cmd)
 
     switch_cmd_parser = sub_parsers.add_parser('switch', aliases=['s', 'activate', 'a'],
-                                               help='Activates the named environment. If an environment is currently '
-                                                    'active it is first deactivated.')
+                                               help='Activates the environment which matches the name or number given. '
+                                                    'If an environment is currently active it is first deactivated.')
     switch_cmd_parser.add_argument('name')
     switch_cmd_parser.set_defaults(func=switch_cmd)
 
