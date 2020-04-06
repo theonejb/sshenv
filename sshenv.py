@@ -110,7 +110,6 @@ def deactivate_env(ssh_home, env_to_deactivate):
     symlinked_files = get_all_symlinked_files_for_env(ssh_home, env_to_deactivate)
 
     for file in symlinked_files:
-        print(f'Unlinking file at path {file}.')
         file.unlink()
 
 
@@ -125,7 +124,6 @@ def activate_env(ssh_home, env_to_activate):
             raise IOError(f'{symlink_path} already exists')
 
         symlink_path.symlink_to(file_path)
-        print(f'Symlinked {file_path} to {symlink_path}.')
 
 
 def list_cmd(args):
